@@ -14,5 +14,5 @@
 
 - [核心算子锻造（四）](./核心算子锻造（四）.md)
 
- 引入 Conv、Bottleneck、C2f、C3k2 和 SPPF，构建 Backbone 与 FPN 融合结构，从基础模块到完整模型
+  引入 Conv、Bottleneck、C2f、C3k2 和 SPPF，构建 Backbone 与 FPN 融合结构，从基础模块到完整模型
 
