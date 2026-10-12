@@ -155,7 +155,7 @@ def train_model():
     num_classes = 2
     batch_size = 4
     num_epochs = 20
-    save_dir = "nn/weights"
+    save_dir = "runs/weights"
     os.makedirs(save_dir, exist_ok=True)
 
     # 数据准备（使用自定义 collate_fn 处理多尺度标签）
