@@ -280,8 +280,7 @@ class YOLOLikeDetector(nn.Module):
         return [
             self.head3(f3),                       # [B, C, 32, 32]
             self.head4(f4),                       # [B, C, 16, 16]
-            self.head5(p5),                       # [B, C, 8, 8]
-        ]
+            self.head5(p5),                       # [B, C, 8, 8]]
         
         
 def check_model_shapes():
@@ -350,7 +349,7 @@ def train_model():
     num_classes = 2
     batch_size = 4
     num_epochs = 20
-    save_dir = "weights"
+    save_dir = "nn/weights"
     os.makedirs(save_dir, exist_ok=True)
 
     train_dataset = MultiscaleFakeDataset(80, img_size, num_classes)
