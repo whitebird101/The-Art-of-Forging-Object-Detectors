@@ -349,7 +349,7 @@ def train_model():
     num_classes = 2
     batch_size = 4
     num_epochs = 20
-    save_dir = "nn/weights"
+    save_dir = "runs/weights"
     os.makedirs(save_dir, exist_ok=True)
 
     train_dataset = MultiscaleFakeDataset(80, img_size, num_classes)
