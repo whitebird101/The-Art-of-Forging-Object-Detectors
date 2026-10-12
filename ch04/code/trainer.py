@@ -13,7 +13,7 @@ from tqdm import tqdm
 class SimpleTrainer:
     """管理模型训练、验证和权重保存。"""
 
-    def __init__(self, model, train_loader, val_loader, device, lr=1e-3, save_dir="weights"):
+    def __init__(self, model, train_loader, val_loader, device, lr=1e-3, save_dir="runs/weights"):
         self.model = model.to(device)                  # 模型
         self.train_loader = train_loader               # 训练集
         self.val_loader = val_loader                   # 验证集
