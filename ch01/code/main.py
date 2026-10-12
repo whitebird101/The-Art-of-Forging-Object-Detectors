@@ -96,7 +96,7 @@ def train_model():
     batch_size = 4      # 设定 DataLoader 每次打包送入网络的样本数量
     num_epochs = 20      # 设定模型需要遍历整个训练数据集的轮数
 
-    save_dir = "weights"
+    save_dir = "runs/weights"
     os.makedirs(save_dir, exist_ok=True)
 
     train_dataset = SimpleFakeDataset(num_samples=80, img_size=img_size, num_classes=num_classes)
