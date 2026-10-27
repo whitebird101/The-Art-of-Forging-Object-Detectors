@@ -10,7 +10,7 @@
 
 - [YAML 蓝图与 `parse_model` 动态引擎（三）](./YAML蓝图与parse_model动态引擎（一）.md)
 
-  敬请期待……
+  将 parse_model() 封装进 DetectionModel，依据 from 调度层间连接，通过 save 按需缓存特征，利用虚拟输入验证模型结构与多尺度输出。
 
 
 
