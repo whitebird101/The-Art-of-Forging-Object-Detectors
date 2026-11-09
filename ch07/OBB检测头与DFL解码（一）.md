@@ -21,7 +21,7 @@
 如果 `nc=2`，也就是模型支持的类别数是 2 的话，那么最终输出的特征图就如下所示，每一个 `1x1x7` 的区域，就是一个预测目标。
 
 <p align="center">
-  <img src="https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/4db894cdf00741beac9270ba4074906f~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5rGf5ram6Iif:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzI5NTY4NzI5NTY0NzQ4MyJ9&rk3s=f64ab15b&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1794792032&x-orig-sign=MzbwQSv17glTf76MQzDvUFtfmOo%3D" width="65%" alt="">
+  <img src="./images/fig-07-001.png" width="45%" alt="">
 </p>
 
 也就是说：**每一个网格位置负责预测一个目标。** 这种设计非常直观，但是它隐含了一个天真的假设：
@@ -43,7 +43,7 @@
 简单说，`Anchor` 就是在特征图（比如刚刚说的 `20x20` 特征图）的每个格子上，预先放置若干个"模板框"，每个模板有不同的长宽比。比如放 3 个 `Anchor`：一个扁的（适合检测汽车）、一个方的（适合检测行人）、一个竖的（适合检测路灯）。这样每个格子就能同时预测 3 个目标了。
 
 <p align="center">
-  <img src="https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/c788d0a110034216bbea17d45fd49538~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5rGf5ram6Iif:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzI5NTY4NzI5NTY0NzQ4MyJ9&rk3s=f64ab15b&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1794792032&x-orig-sign=RW3N9c219D%2BSxRyXqVueIDGwo9s%3D" width="65%" alt="">
+  <img src="./images/fig-07-002.png" width="45%" alt="">
 </p>
 
 看起来不错？但问题来了——旋转框场景下，预制 `Anchor` 的模式会导致维度灾难。
@@ -74,7 +74,7 @@
 模型预测该点到目标框四条边的距离：`left，top，right，bottom`，用一个图表示就是：
 
 <p align="center">
-  <img src="https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/45391e87cfe7426784798e51dce66b52~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5rGf5ram6Iif:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzI5NTY4NzI5NTY0NzQ4MyJ9&rk3s=f64ab15b&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1794792032&x-orig-sign=ckoc2ewO3JjQdudbH%2FlPLE6mGsQ%3D" width="65%" alt="">
+  <img src="./images/fig-07-003.png" width="45%" alt="">
 </p>
 
 最终根据四个距离计算出目标框的具体位置，当然，这个目标框是水平框，或许还要预测出这个框的旋转角度。
@@ -185,7 +185,7 @@ left = 0×0.003 + 1×0.007 + 2×0.031 + 3×0.139 + 4×0.624
 **但真正的收获不仅是那个数值，而是分布的形状。** 看下图所示的三个分布（横轴是候选值 `0~15`，纵轴是概率）：
 
 <p align="center">
-  <img src="https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/63820bb8ecee4a3cb599cf6099ec7d9a~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5rGf5ram6Iif:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzI5NTY4NzI5NTY0NzQ4MyJ9&rk3s=f64ab15b&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1794792032&x-orig-sign=FwrEvNdhsXIkUb8tuBW9NiYEqsU%3D" width="85%" alt="">
+  <img src="./images/fig-07-005.png" width="45%" alt="">
 </p>
 
 *   **尖锐分布**：概率几乎全压在某一个候选值上，期望几乎就等于那个候选值（约 `5.00`），说明网络很确定。
