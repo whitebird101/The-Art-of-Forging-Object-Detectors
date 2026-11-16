@@ -15,11 +15,11 @@
 
 数学期望的计算公式为：
 
-$  
+```math
 d = 0 \cdot p_0 + 1 \cdot p_1 + 2 \cdot p_2 + \cdots + 15 \cdot p_{15}  
-$，
+```
 
-其中，$p_i$ 表示第 $i$ 个候选值对应的概率。
+其中， $p_i$ 表示第 $i$ 个候选值对应的概率。
 
 这个公式本质上是一次**加权求和**：每个候选值乘以自己的概率，再把所有乘积相加。
 
@@ -27,7 +27,13 @@ $，
 
 **数学期望的计算，与卷积运算的核心计算形式非常相似。** 既然如此，我们自然想到，能不能利用卷积来计算数学期望呢？答案自然是可以的。
 
-只需要构造一个特殊的卷积核，将它的权重固定为：`[0, 1, 2, 3, ..., 15]`，然后把 16 个概率作为输入。这样，卷积计算得到的就是：$  0 \cdot p_0 + 1 \cdot p_1 + 2 \cdot p_2 + \cdots + 15 \cdot p_{15}  $，这正是我们需要的数学期望。
+只需要构造一个特殊的卷积核，将它的权重固定为：`[0, 1, 2, 3, ..., 15]`，然后把 16 个概率作为输入。这样，卷积计算得到的就是：
+
+```math
+0 \cdot p_0 + 1 \cdot p_1 + 2 \cdot p_2 + \cdots + 15 \cdot p_{15}  
+```
+
+这正是我们需要的数学期望。
 
 在代码中，我们使用一个输入通道数为 16、输出通道数为 1、卷积核大小为 `1×1` 的卷积层来实现这个计算：
 
@@ -271,7 +277,7 @@ def make_anchors(feats, strides, grid_cell_offset=0.5):
 文字说起来好像有点难理解，看动图吧，再结合着这几个函数的功能，可能理解起来容易些，不要着急，慢慢捋一下。
 
 <p align="center">
-  <img src="https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/6b2219a8cdd549e781c8dbf4123f7530~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5rGf5ram6Iif:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzI5NTY4NzI5NTY0NzQ4MyJ9&rk3s=f64ab15b&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1795396824&x-orig-sign=DkMeR34BNYBva2fEzKe94hkGW0U%3D" width="85%" alt="">
+  <img src="./images/07-02-001.gif" width="65%" alt="">
 </p>
 
 ###### 2、显式传入 dtype 的原因
@@ -291,7 +297,7 @@ def make_anchors(feats, strides, grid_cell_offset=0.5):
 假设我们有三个数，希望每个数都加上 10。
 
 用循环，可以这样写：
-
+```python
     numbers = [1, 2, 3]
     results = []
 
@@ -299,34 +305,34 @@ def make_anchors(feats, strides, grid_cell_offset=0.5):
         results.append(x + 10)
 
     print(results)
-
+```
 输出结果：
-
+```text
     [11, 12, 13]
-
+```
 这种写法很好理解：先处理 1，再处理 2，最后处理 3。
 
 如果使用 PyTorch 张量，也可以这样写：
-
+```python
     import torch
 
     numbers = torch.tensor([1, 2, 3])
     results = numbers + 10
 
     print(results)
-
+```
 输出结果同样是：
-
+```text
     tensor([11, 12, 13])
-
+```
 两种写法完成的是同一件事，只是实现方式不同。
-
+```text
     逐个计算                         张量运算
 
     1  →  1 + 10 = 11               ┌ 1 ┐       ┌ 11 ┐
     2  →  2 + 10 = 12       →       │ 2 │ + 10 =│ 12 │
     3  →  3 + 10 = 13               └ 3 ┘       └ 13 ┘
-
+```
 左边是通过循环逐个计算，右边则是直接对整个张量执行加法。
 
 需要注意的是，**张量运算并不是另一套计算规则，而是将一批数据组织起来，利用支持批量处理的运算完成计算。** 对于这里的加法，我们不需要自己编写循环，PyTorch 就能一次得到所有结果。
@@ -416,7 +422,7 @@ P5 (stride=32): 锚点数=400, x范围=[0.5, 19.5], y范围=[0.5, 19.5]
 #### 2. 编写 dist2bbox 函数
 
 在 `make_anchors()` 后面添加以下函数：
-
+```pthon
     def dist2bbox(distance, anchor_points, xywh=True, dim=-1):
         """
         根据锚点坐标和四个边界距离，计算水平边界框。
@@ -446,13 +452,13 @@ P5 (stride=32): 锚点数=400, x范围=[0.5, 19.5], y范围=[0.5, 19.5]
 
         # 否则，就返回左上角、右下角形式的矩形表示，也就是 (x1, y1, x2, y2)
         return torch.cat((x1y1, x2y2), dim=dim)
-
+```
 详细拆解一下这个函数的代码。
 
 **第一步：拆分四个距离。**
-
+```python
     lt, rb = distance.chunk(2, dim=dim)
-
+```
 这里使用了 PyTorch 的 `chunk()` 函数。它的作用是沿指定维度，将一个张量尽可能均匀地切分成指定数量的部分。`dim` 参数就是用来指定这个维度的，后面我们单独解释这个参数。
 
 `chunk(2, dim=dim)` 中的 `2` 表示分成两份，而不是每份包含两个元素。
@@ -481,11 +487,11 @@ P5 (stride=32): 锚点数=400, x范围=[0.5, 19.5], y范围=[0.5, 19.5]
 计算出左上角和右下角之后，水平框就已经确定了。接下来，只是决定以什么形式输出。
 
 当 `xywh=True` 时，表示要返回“中心点+宽高”的表示形式：
-
+```python
     c_xy = (x1y1 + x2y2) / 2
     wh = x2y2 - x1y1
     return torch.cat((c_xy, wh), dim=dim)
-
+```
 当 `xywh=False` 时，函数返回“左上角+右下角”的表示形式：
 
     (x1, y1, x2, y2) = (8, 17, 14, 25)
@@ -499,19 +505,19 @@ P5 (stride=32): 锚点数=400, x范围=[0.5, 19.5], y范围=[0.5, 19.5]
 代码中还有一个容易让人困惑的参数：`dim`。它指定了四个距离存放在 `distance` 张量的哪个维度。不同的代码可能采用不同的张量排列方式。
 
 例如：
-
+```python
     # 情况一：最后一维保存四个距离
     distance.shape = (B, A, 4)
     # 使用默认参数 dim=-1
-
+```
 这里，`B` 表示批次大小，`A` 表示锚点数量，最后的 `4` 表示每个锚点的四个距离。此时，`chunk(2, dim=-1)` 会把最后一维拆成两个大小为 2 的部分。
 
 如果张量排列方式是：
-
+```python
     # 情况二：第二维保存四个距离
     distance.shape = (B, 4, A)
     # 应使用 dim=1
-
+```
 那么就需要沿第二维切分，即使用 `chunk(2, dim=1)`。相应地，`anchor_points` 的形状也需要能够与切分后的张量正确进行运算。
 
 因此， `dim` **必须与实际的张量布局保持一致。** 本函数默认使用 `dim=-1`，适用于四个距离位于最后一维的情况；如果采用 `(B, 4, A)` 的布局，就需要显式传入 `dim=1`。
@@ -529,15 +535,14 @@ P5 (stride=32): 锚点数=400, x范围=[0.5, 19.5], y范围=[0.5, 19.5]
 看图可能理解起来更容易一些：
 
 <p align="center">
-  <img src="https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/b31e16bab9c44e1ca5dde0a4660af977~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5rGf5ram6Iif:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzI5NTY4NzI5NTY0NzQ4MyJ9&rk3s=f64ab15b&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1795396824&x-orig-sign=%2BUEF5TNzTa63dKP7kj0JWHwYWBo%3D" width="95%" alt="">
+  <img src="./images/07-02-002-3.png" width="45%" alt="">
 </p>
 
 理解了这个关键之后，我们可以来考虑一下如何计算旋转目标框了。我们可以分两步理解这个过程。
 
 **第一步：计算中心相对于锚点的局部偏移。**
 
-沿框宽度方向的偏移为：$x_f = \frac{right-left}{2}$，沿框高度方向的偏移为：$
-y_f = \frac{bottom-top}{2}$。
+沿框宽度方向的偏移为： $x_f = \frac{right-left}{2}$ ，沿框高度方向的偏移为： $y_f = \frac{bottom-top}{2}$  。
 
 这里的 `(x_f)` 和 `(y_f)` 是按照目标框自身方向定义的偏移量，还不能直接当作图像坐标系中的 `X、Y`
 偏移。
@@ -546,21 +551,21 @@ y_f = \frac{bottom-top}{2}$。
 
 设预测角度为 `pred_angle` ，代码采用的角度单位是弧度。按照本卷采用的图像坐标约定，转换公式为：
 
-$$
+```math
 \Delta x = x_f\cos\theta-y_f\sin\theta
-$$
+```
 
-$$
+```math
 \Delta y = x_f\sin\theta+y_f\cos\theta
-$$
+```
 
 可以把它理解为：局部偏移在图像 `X、Y` 方向上各自贡献了一部分投影，三角函数给出了这些投影的比例。把两个投影加回锚点坐标，就得到旋转框中心。
 
 旋转目标框的宽度和高度不需要再乘三角函数，因为无论怎么旋转，矩形框的宽和高都不会变化，直接计算即可：
 
-$$
+```math
 w=left+right,\qquad h=top+bottom
-$$
+```
 
 有了这个思路之后，我们在 `nn/head.py` 中添加 `dist2rbox()` 函数。
 
