@@ -30,7 +30,7 @@
 以 OBB 检测头为例，看一下检测头内部的具体结构：
 
 <p align="center">
-  <img src="https://p0-xtjj-private.juejin.cn/tos-cn-i-73owjymdk6/f3a5c309f1f84c26928dcf81b0acd416~tplv-73owjymdk6-jj-mark-v1:0:0:0:0:5o6Y6YeR5oqA5pyv56S-5Yy6IEAg5rGf5ram6Iif:q75.awebp?policy=eyJ2bSI6MywidWlkIjoiMzI5NTY4NzI5NTY0NzQ4MyJ9&rk3s=f64ab15b&x-orig-authkey=f32326d3454f2ac7e96d3d06cdbb035152127018&x-orig-expires=1796002283&x-orig-sign=irQQiLXEYjCgnY0XG9P%2FsYJ%2ByaI%3D" width="85%" alt="">
+  <img src="./images/07-03-001.png" width="75%" alt="">
 </p>
 
 如图所示，每个分支都由三层卷积组成：
